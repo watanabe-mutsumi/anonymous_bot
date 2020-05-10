@@ -11,7 +11,9 @@ def say_hello(**payload):
     data = payload['data']
     web_client = payload['web_client']
     rtm_client = payload['rtm_client']
-    if 'text' in data:
+
+    # bot自身の応答（userが未設定）でなければ代理投稿開始
+    if 'text' in data and 'user' in data:
         channel_id = data['channel']
         thread_ts = data['ts']
 
@@ -29,8 +31,8 @@ def say_hello(**payload):
             assert e.response["error"]  # str like 'invalid_auth', 'channel_not_found'
             print(f"Got an error on reply: {e.response['error']}")
 
-        #02 3秒待ってから名無しで投稿する
-        sleep(3)
+        #02 1秒待ってから名無しで投稿する
+        sleep(1)
         try:
             response2 = web_client.chat_postMessage(
                 channel=target_channel_id,
